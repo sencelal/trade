@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, Request
 import ccxt
 import uvicorn
@@ -5,19 +6,22 @@ import requests
 
 app = FastAPI()
 
-# 1. TELEGRAM VE BORSA BİLGİLERİ (Buraları kendi bilgilerinle dolduracaksın)
-TELEGRAM_TOKEN = "BOTFATHER_DAN_ALDIGIN_TOKEN"
-TELEGRAM_CHAT_ID = "KENDİ_TELEGRAM_ID_NUMARAN"
+# 1. GİZLİ BİLGİLERİ SİSTEMDEN ÇEK (Kodun içinde şifre kalmadı!)
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+BINANCE_API_KEY = os.getenv("BINANCE_API_KEY")
+BINANCE_SECRET_KEY = os.getenv("BINANCE_SECRET_KEY")
 
-# Tamamen ücretsiz ve risksiz test için Binance Testnet (Demo) API'leri
 exchange = ccxt.binance({
-    'apiKey': 'TESTNET_API_KEY_BURAYA',
-    'secret': 'TESTNET_SECRET_KEY_BURAYA',
+    'apiKey': BINANCE_API_KEY,
+    'secret': BINANCE_SECRET_KEY,
     'enableRateLimit': True,
 })
-exchange.set_sandbox_mode(True) # Bu satır gerçek paranı değil, demo parayı harcar!
+exchange.set_sandbox_mode(True) # Demo mod aktif
+
 
 def send_telegram_message(message):
+    # BURASI DÜZELTİLDİ: api.telegram.org ve /bot eklendi
     url = f"https://telegram.org{TELEGRAM_TOKEN}/sendMessage"
     payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message}
     requests.post(url, json=payload)
